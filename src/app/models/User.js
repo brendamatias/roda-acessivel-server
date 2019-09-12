@@ -11,6 +11,7 @@ class User extends Model {
         password_hash: Sequelize.STRING,
         gender: Sequelize.STRING,
         date_of_birth: Sequelize.DATE,
+        admin: Sequelize.BOOLEAN,
       },
       {
         sequelize,

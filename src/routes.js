@@ -16,16 +16,14 @@ routes.post('/users', UserController.store); /* Inserir OK */
 routes.post('/sessions', SessionController.store);
 
 /* Categorias */
-/* Alterar, Excluir */
-/* Necessário validação de usuario admin */
 routes.get('/categories', CategoryController.index); /* Listar OK */
-/* NECESSÁRIO VALIDAÇÃO DE ADMIN */
-routes.post('/categories', CategoryController.store);
-routes.put('/categories', CategoryController.update);
 
 routes.use(authMiddleware);
 routes.put('/users', UserController.update); /* Alterar OK */
-/* NECESSÁRIO VALIDAÇÃO DE ADMIN */
+
+routes.post('/categories', CategoryController.store);
+routes.put('/categories', CategoryController.update);
+routes.delete('/categories/:id', CategoryController.delete);
 
 /* Locais */
 /* Listar, Inserir, Alterar, Excluir */

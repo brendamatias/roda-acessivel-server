@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import Category from '../models/Category';
+import User from '../models/User';
 
 class CategoryController {
   async index(req, res) {
@@ -15,6 +16,15 @@ class CategoryController {
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation fails' });
+    }
+
+    const user = await User.findByPk(req.userId);
+
+    if (!user.admin) {
+      return res.status(401).json({
+        error:
+          'Você não tem permissão de administrador para criação de novas categorias.',
+      });
     }
 
     const categoryExists = await Category.findOne({
@@ -43,6 +53,15 @@ class CategoryController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
+    const user = await User.findByPk(req.userId);
+
+    if (!user.admin) {
+      return res.status(401).json({
+        error:
+          'Você não tem permissão de administrador para alterar categorias.',
+      });
+    }
+
     const { id, name } = req.body;
     const category = await Category.findByPk(id);
 
@@ -60,6 +79,30 @@ class CategoryController {
     return res.json({
       categoryUpdate,
     });
+  }
+
+  async delete(req, res) {
+    const user = await User.findByPk(req.userId);
+
+    if (!user.admin) {
+      return res.status(401).json({
+        error: 'Você não tem permissão para deletar categorias.',
+      });
+    }
+
+    const category = await Category.findByPk(req.params.id);
+
+    if (!category) {
+      return res.status(404).json({
+        error: 'Categoria não existente.',
+      });
+    }
+
+    Category.destroy({
+      where: { id: req.params.id },
+    });
+
+    return res.status(200).json({ success: 'Categoria deletada com sucesso!' });
   }
 }
 
