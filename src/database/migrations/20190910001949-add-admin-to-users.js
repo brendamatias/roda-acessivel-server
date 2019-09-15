@@ -8,6 +8,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.add('users', 'admin');
+    return queryInterface.removeColumn('users', 'admin');
   },
 };
