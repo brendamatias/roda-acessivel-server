@@ -23,6 +23,10 @@ class Location extends Model {
       foreignKey: 'address_id',
       as: 'address',
     });
+    this.belongsTo(models.File, {
+      foreignKey: 'image_id',
+      as: 'image',
+    });
   }
 }
 

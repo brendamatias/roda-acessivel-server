@@ -4,15 +4,27 @@ import Location from '../models/Location';
 import User from '../models/User';
 import Address from '../models/Address';
 import Category from '../models/Category';
+import File from '../models/File';
 
 class LocationController {
   async index(req, res) {
+    if (req.params.id) {
+      const location = await Location.findByPk(req.params.id);
+      if (!location) {
+        return res.status(404).json({
+          error: 'Localidade não existente.',
+        });
+      }
+
+      return res.json(location);
+    }
+
     const { page = 1 } = req.query;
 
     const locations = await Location.findAll({
       order: ['id'],
-      limit: 10,
-      offset: (page - 1) * 20,
+      limit: 4,
+      offset: (page - 1) * 4,
       attributes: ['id', 'name'],
       include: [
         {
@@ -32,6 +44,11 @@ class LocationController {
             'state',
             'zip_code',
           ],
+        },
+        {
+          model: File,
+          as: 'image',
+          attributes: ['id', 'path'],
         },
       ],
     });
