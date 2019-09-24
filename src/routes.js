@@ -7,6 +7,8 @@ import CategoryController from './app/controllers/CategoryController';
 import LocationController from './app/controllers/LocationController';
 import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
+import EvaluationController from './app/controllers/EvaluationController';
+
 import authMiddleware from './app/middlewares/auth';
 
 const routes = new Router();
@@ -30,6 +32,8 @@ routes.delete('/categories/:id', CategoryController.delete);
 routes.post('/locations', LocationController.store);
 routes.put('/locations', LocationController.update);
 routes.delete('/locations/:id', LocationController.delete);
+
+routes.post('/evaluations', EvaluationController.store);
 
 routes.post('/files', upload.single('file'), FileController.store);
 /* Avaliações */

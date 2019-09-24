@@ -5,10 +5,11 @@ import Category from '../app/models/Category';
 import Location from '../app/models/Location';
 import Address from '../app/models/Address';
 import File from '../app/models/File';
+import Evaluation from '../app/models/Evaluation';
 
 import databaseConfig from '../config/database';
 
-const models = [User, Category, Location, Address, File];
+const models = [User, Category, Location, Address, File, Evaluation];
 
 class Database {
   constructor() {
