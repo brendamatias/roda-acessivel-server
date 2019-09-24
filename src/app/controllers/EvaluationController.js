@@ -4,9 +4,15 @@ import User from '../models/User';
 import Location from '../models/Location';
 
 class EvaluationController {
+  async index(req, res) {
+    const evaluations = await Evaluation.findAll({
+      where: { location_id: req.params.id },
+    });
+
+    return res.json(evaluations);
+  }
+
   async store(req, res) {
-    const { user } = req.headers;
-    console.log(user);
     const schema = Yup.object().shape({
       entry_note: Yup.string()
         .required()
@@ -22,16 +28,15 @@ class EvaluationController {
         .max(1),
       comment: Yup.string(),
       location_id: Yup.string().required(),
-      user_id: Yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { location_id, user_id } = req.body;
+    const { location_id } = req.body;
 
-    const userExists = await User.findOne({ where: { id: user_id } });
+    const userExists = await User.findOne({ where: { id: req.userId } });
 
     if (!userExists) {
       return res.status(400).json({ error: 'Usuário não existente!' });
@@ -45,7 +50,23 @@ class EvaluationController {
       return res.status(400).json({ error: 'Localização não existente!' });
     }
 
-    await Evaluation.create(req.body);
+    const {
+      entry_note,
+      parking_note,
+      circulation_note,
+      bathroom_note,
+      comment,
+    } = req.body;
+
+    await Evaluation.create({
+      entry_note,
+      parking_note,
+      circulation_note,
+      bathroom_note,
+      comment,
+      location_id,
+      user_id: req.userId,
+    });
     return res.json({ success: 'Avaliação registrada com sucesso!' });
   }
 }

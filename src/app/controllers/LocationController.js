@@ -1,5 +1,4 @@
 import * as Yup from 'yup';
-import Sequelize from 'sequelize';
 import api from '../../services/api';
 import Location from '../models/Location';
 import User from '../models/User';
@@ -26,21 +25,7 @@ class LocationController {
       order: ['id'],
       limit: 4,
       offset: (page - 1) * 4,
-      attributes: [
-        'id',
-        'name',
-        [
-          Sequelize.literal(
-            `(select (sum(entry_note)/count(*)) as EntryNote from evaluations where location_id = ${Sequelize.col(
-              'locations.id'
-            )})`
-          ),
-          `entry_note2`,
-        ],
-        'parking_note',
-        'circulation_note',
-        'bathroom_note',
-      ],
+      attributes: ['id', 'name'],
       include: [
         {
           model: Category,

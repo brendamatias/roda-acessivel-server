@@ -22,6 +22,7 @@ routes.post('/sessions', SessionController.store);
 routes.get('/categories', CategoryController.index);
 routes.get('/locations', LocationController.index);
 routes.get('/locations/:id', LocationController.index);
+routes.get('/evaluations/:id', EvaluationController.index);
 
 routes.use(authMiddleware);
 routes.put('/users', UserController.update);
