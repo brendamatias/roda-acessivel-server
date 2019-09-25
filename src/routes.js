@@ -24,7 +24,7 @@ routes.get('/locations', LocationController.index);
 routes.get('/locations/:id', LocationController.index);
 routes.get('/evaluations/:id', EvaluationController.index);
 
-routes.get('/', (req, res) => res.send('ok'));
+routes.get('/', (req, res) => res.send("IT'S WORK!"));
 
 routes.use(authMiddleware);
 routes.put('/users', UserController.update);
