@@ -25,7 +25,14 @@ class LocationController {
       order: ['id'],
       limit: 4,
       offset: (page - 1) * 4,
-      attributes: ['id', 'name'],
+      attributes: ['id', 'name', [
+        Sequelize.literal(
+          `(SELECT array_agg("comment")
+            FROM "evaluations" 
+            WHERE "location_id" = "Location"."id")`
+        ),
+        `teste`,
+      ],],
       include: [
         {
           model: Category,
