@@ -24,6 +24,8 @@ routes.get('/locations', LocationController.index);
 routes.get('/locations/:id', LocationController.index);
 routes.get('/evaluations/:id', EvaluationController.index);
 
+routes.get('/', (req, res) => res.send('ok'));
+
 routes.use(authMiddleware);
 routes.put('/users', UserController.update);
 routes.post('/categories', CategoryController.store);
