@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 import Evaluation from '../models/Evaluation';
 import User from '../models/User';
 import Location from '../models/Location';
+import Comment from '../models/Comment';
 
 class EvaluationController {
   async index(req, res) {
@@ -42,11 +43,11 @@ class EvaluationController {
       return res.status(400).json({ error: 'Usuário não existente.' });
     }
 
-    const locationExists = await Location.findOne({
+    const location = await Location.findOne({
       where: { id: location_id },
     });
 
-    if (!locationExists) {
+    if (!location) {
       return res.status(400).json({ error: 'Localização não existente.' });
     }
 
@@ -55,18 +56,25 @@ class EvaluationController {
       parking_note,
       circulation_note,
       bathroom_note,
-      comment,
+      comment: content,
     } = req.body;
+
+    if (content && content.length > 0) {
+      const { id } = await Comment.create({ content });
+
+      location.setComments(id);
+    }
 
     await Evaluation.create({
       entry_note,
       parking_note,
       circulation_note,
       bathroom_note,
-      comment,
+      comment: content,
       location_id,
       user_id: req.userId,
     });
+
     return res.json({ success: 'Avaliação registrada com sucesso!' });
   }
 }

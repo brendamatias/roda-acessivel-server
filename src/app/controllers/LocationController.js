@@ -6,6 +6,7 @@ import User from '../models/User';
 import Address from '../models/Address';
 import Category from '../models/Category';
 import File from '../models/File';
+import Comment from '../models/Comment';
 
 class LocationController {
   async index(req, res) {
@@ -63,6 +64,7 @@ class LocationController {
         ],
       ],
       include: [
+        /*
         {
           model: Category,
           as: 'category',
@@ -85,6 +87,11 @@ class LocationController {
           model: File,
           as: 'image',
           attributes: ['id', 'path'],
+        }, */
+        {
+          model: Comment,
+          as: 'comments',
+          through: { attributes: [] },
         },
       ],
     });

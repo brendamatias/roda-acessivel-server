@@ -27,6 +27,11 @@ class Location extends Model {
       foreignKey: 'image_id',
       as: 'image',
     });
+    this.belongsToMany(models.Comment, {
+      through: 'comments_locations',
+      as: 'comments',
+      foreignKey: 'location_id',
+    });
   }
 }
 
