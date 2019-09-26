@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import Sequelize from 'sequelize';
 import api from '../../services/api';
 import Location from '../models/Location';
 import User from '../models/User';
@@ -25,14 +26,42 @@ class LocationController {
       order: ['id'],
       limit: 4,
       offset: (page - 1) * 4,
-      attributes: ['id', 'name',/* [
-        Sequelize.literal(
-          `(SELECT array_agg("comment")
-            FROM "evaluations" 
-            WHERE "location_id" = "Location"."id")`
-        ),
-        `teste`,
-      ],*/],
+      attributes: [
+        'id',
+        'name',
+        [
+          Sequelize.literal(
+            `(SELECT (sum("entry_note")/count(*))
+              FROM "evaluations"
+              WHERE "location_id" = "Location"."id")`
+          ),
+          `entry_note`,
+        ],
+        [
+          Sequelize.literal(
+            `(SELECT (sum("parking_note")/count(*))
+              FROM "evaluations"
+              WHERE "location_id" = "Location"."id")`
+          ),
+          `parking_note`,
+        ],
+        [
+          Sequelize.literal(
+            `(SELECT (sum("circulation_note")/count(*))
+              FROM "evaluations"
+              WHERE "location_id" = "Location"."id")`
+          ),
+          `circulation_note`,
+        ],
+        [
+          Sequelize.literal(
+            `(SELECT (sum("bathroom_note")/count(*))
+              FROM "evaluations"
+              WHERE "location_id" = "Location"."id")`
+          ),
+          `bathroom_note`,
+        ],
+      ],
       include: [
         {
           model: Category,
@@ -75,7 +104,7 @@ class LocationController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      return res.status(400).json({ error: 'Falha na validação.' });
     }
 
     const user = await User.findByPk(req.userId);
@@ -83,7 +112,7 @@ class LocationController {
     if (!user.admin) {
       return res.status(401).json({
         error:
-          'Você não tem permissão de administrador para criação de novas categorias.',
+          'Você não tem permissão de administrador para criação de novas localizações.',
       });
     }
 
@@ -100,7 +129,7 @@ class LocationController {
     });
 
     if (!categoryExists) {
-      return res.status(400).json({ error: 'Categoria não existente!' });
+      return res.status(400).json({ error: 'Categoria não existente.' });
     }
 
     const response = await api
@@ -117,7 +146,7 @@ class LocationController {
     });
 
     if (addressExists) {
-      return res.status(400).json({ error: 'Endereço já cadastrado!' });
+      return res.status(400).json({ error: 'Endereço já cadastrado.' });
     }
 
     const { id: address_id } = await Address.create({
@@ -153,7 +182,7 @@ class LocationController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      return res.status(400).json({ error: 'Falha na validação.' });
     }
 
     const user = await User.findByPk(req.userId);
@@ -197,7 +226,7 @@ class LocationController {
       });
 
       if (addressExists) {
-        return res.status(400).json({ error: 'Endereço já cadastrado!' });
+        return res.status(400).json({ error: 'Endereço já cadastrado.' });
       }
 
       const address = await Address.findByPk(location.address_id);

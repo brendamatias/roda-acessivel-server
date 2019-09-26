@@ -20,13 +20,13 @@ class UserController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      return res.status(400).json({ error: 'Falha na validação.' });
     }
 
     const userExists = await User.findOne({ where: { email: req.body.email } });
 
     if (userExists) {
-      return res.status(400).json({ error: 'User already exists' });
+      return res.status(400).json({ error: 'Usuário já existente.' });
     }
 
     const { id, name, email } = await User.create(req.body);
@@ -63,7 +63,7 @@ class UserController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      return res.status(400).json({ error: 'Falha na validação.' });
     }
 
     const { email, oldPassword } = req.body;
@@ -76,12 +76,19 @@ class UserController {
       });
 
       if (userExists) {
-        return res.status(400).json({ error: 'User already exists' });
+        return res.status(400).json({ error: 'Usuário já existente.' });
       }
     }
 
     if (oldPassword && !(await user.checkPassword(oldPassword))) {
-      return res.status(401).json({ error: 'Password does not match' });
+      return res.status(401).json({ error: 'As senhas não correspondem.' });
+    }
+
+    const { admin } = req.body;
+    if (admin) {
+      return res.status(400).json({
+        error: 'Você não tem permissão de administrador para essa requisição.',
+      });
     }
 
     const { id, name } = await user.update(req.body);

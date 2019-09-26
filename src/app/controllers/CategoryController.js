@@ -15,7 +15,7 @@ class CategoryController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      return res.status(400).json({ error: 'Falha na validação.' });
     }
 
     const user = await User.findByPk(req.userId);
@@ -32,7 +32,7 @@ class CategoryController {
     });
 
     if (categoryExists) {
-      return res.status(400).json({ error: 'Category already exists' });
+      return res.status(400).json({ error: 'Categoria já existente.' });
     }
 
     const { id, name } = await Category.create(req.body);
@@ -50,7 +50,7 @@ class CategoryController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      return res.status(400).json({ error: 'Falha na validação.' });
     }
 
     const user = await User.findByPk(req.userId);
@@ -75,7 +75,7 @@ class CategoryController {
       });
 
       if (categoryExists) {
-        return res.status(400).json({ error: 'Categoria já existente' });
+        return res.status(400).json({ error: 'Categoria já existente.' });
       }
     }
 

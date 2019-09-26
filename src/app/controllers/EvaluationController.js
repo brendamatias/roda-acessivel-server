@@ -31,7 +31,7 @@ class EvaluationController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      return res.status(400).json({ error: 'Falha na validação.' });
     }
 
     const { location_id } = req.body;
@@ -39,7 +39,7 @@ class EvaluationController {
     const userExists = await User.findOne({ where: { id: req.userId } });
 
     if (!userExists) {
-      return res.status(400).json({ error: 'Usuário não existente!' });
+      return res.status(400).json({ error: 'Usuário não existente.' });
     }
 
     const locationExists = await Location.findOne({
@@ -47,7 +47,7 @@ class EvaluationController {
     });
 
     if (!locationExists) {
-      return res.status(400).json({ error: 'Localização não existente!' });
+      return res.status(400).json({ error: 'Localização não existente.' });
     }
 
     const {
