@@ -86,7 +86,7 @@ class LocationController {
         {
           model: File,
           as: 'image',
-          attributes: ['id', 'path'],
+          through: { attributes: ['id', 'path'] },
         }, */
         {
           model: Comment,
