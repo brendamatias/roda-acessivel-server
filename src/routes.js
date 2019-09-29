@@ -20,6 +20,7 @@ routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
 
 routes.get('/categories', CategoryController.index);
+routes.get('/categories/:id', CategoryController.index);
 routes.get('/locations', LocationController.index);
 routes.get('/locations/:id', LocationController.index);
 routes.get('/evaluations/:id', EvaluationController.index);

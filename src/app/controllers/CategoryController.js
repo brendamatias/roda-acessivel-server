@@ -1,10 +1,78 @@
 import * as Yup from 'yup';
+import Sequelize from 'sequelize';
+
 import Category from '../models/Category';
 import User from '../models/User';
+import Location from '../models/Location';
+import File from '../models/File';
 
 class CategoryController {
   async index(req, res) {
     const categories = await Category.findAll();
+
+    if (req.params.id) {
+      const category = await Category.findByPk(req.params.id);
+
+      if (!category) {
+        return res.status(404).json({
+          error: 'Categoria não existente.',
+        });
+      }
+
+      const { page = 1 } = req.query;
+
+      const location = await Location.findAll({
+        order: ['id'],
+        limit: 4,
+        offset: (page - 1) * 4,
+        attributes: [
+          'id',
+          'name',
+          [
+            Sequelize.literal(
+              `(SELECT (sum("entry_note")/count(*))
+              FROM "evaluations"
+              WHERE "location_id" = "Location"."id")`
+            ),
+            `entry_note`,
+          ],
+          [
+            Sequelize.literal(
+              `(SELECT (sum("parking_note")/count(*))
+              FROM "evaluations"
+              WHERE "location_id" = "Location"."id")`
+            ),
+            `parking_note`,
+          ],
+          [
+            Sequelize.literal(
+              `(SELECT (sum("circulation_note")/count(*))
+              FROM "evaluations"
+              WHERE "location_id" = "Location"."id")`
+            ),
+            `circulation_note`,
+          ],
+          [
+            Sequelize.literal(
+              `(SELECT (sum("bathroom_note")/count(*))
+              FROM "evaluations"
+              WHERE "location_id" = "Location"."id")`
+            ),
+            `bathroom_note`,
+          ],
+        ],
+        include: [
+          {
+            model: File,
+            as: 'image',
+            attributes: ['id', 'path'],
+          },
+        ],
+        where: { category_id: req.params.id },
+      });
+
+      return res.json(location);
+    }
 
     return res.json(categories);
   }

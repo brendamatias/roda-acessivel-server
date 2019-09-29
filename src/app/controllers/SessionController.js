@@ -29,15 +29,13 @@ class SessionController {
       return res.status(401).json({ error: 'As senhas não correspondem.' });
     }
 
-    const { id, name, gender, date_of_birth, admin } = user;
+    const { id, name, admin } = user;
 
     return res.json({
       user: {
         id,
         name,
         email,
-        gender,
-        date_of_birth,
         admin,
       },
       token: jwt.sign({ id }, authConfig.secret, {

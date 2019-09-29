@@ -26,7 +26,6 @@ class EvaluationController {
       bathroom_note: Yup.string()
         .required()
         .max(1),
-      comment: Yup.string(),
       location_id: Yup.string().required(),
     });
 
@@ -55,18 +54,32 @@ class EvaluationController {
       parking_note,
       circulation_note,
       bathroom_note,
-      comment,
     } = req.body;
+
+    const evaluationExists = await Evaluation.findOne({
+      where: { location_id, user_id: req.userId },
+    });
+
+    if (evaluationExists) {
+      await evaluationExists.update({
+        entry_note,
+        parking_note,
+        circulation_note,
+        bathroom_note,
+      });
+
+      return res.json({ success: 'Avaliação registrada com sucesso!' });
+    }
 
     await Evaluation.create({
       entry_note,
       parking_note,
       circulation_note,
       bathroom_note,
-      comment,
       location_id,
       user_id: req.userId,
     });
+
     return res.json({ success: 'Avaliação registrada com sucesso!' });
   }
 }

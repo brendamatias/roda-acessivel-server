@@ -10,7 +10,66 @@ import File from '../models/File';
 class LocationController {
   async index(req, res) {
     if (req.params.id) {
-      const location = await Location.findByPk(req.params.id);
+      const location = await Location.findAll({
+        attributes: [
+          'id',
+          'name',
+          [
+            Sequelize.literal(
+              `(SELECT (sum("entry_note")/count(*))
+              FROM "evaluations"
+              WHERE "location_id" = "Location"."id")`
+            ),
+            `entry_note`,
+          ],
+          [
+            Sequelize.literal(
+              `(SELECT (sum("parking_note")/count(*))
+              FROM "evaluations"
+              WHERE "location_id" = "Location"."id")`
+            ),
+            `parking_note`,
+          ],
+          [
+            Sequelize.literal(
+              `(SELECT (sum("circulation_note")/count(*))
+              FROM "evaluations"
+              WHERE "location_id" = "Location"."id")`
+            ),
+            `circulation_note`,
+          ],
+          [
+            Sequelize.literal(
+              `(SELECT (sum("bathroom_note")/count(*))
+              FROM "evaluations"
+              WHERE "location_id" = "Location"."id")`
+            ),
+            `bathroom_note`,
+          ],
+        ],
+        include: [
+          {
+            model: Address,
+            as: 'address',
+            attributes: [
+              'id',
+              'street',
+              'number',
+              'neighborhood',
+              'city',
+              'state',
+              'zip_code',
+            ],
+          },
+          {
+            model: File,
+            as: 'image',
+            attributes: ['id', 'path'],
+          },
+        ],
+        where: { id: req.params.id },
+      });
+
       if (!location) {
         return res.status(404).json({
           error: 'Localidade não existente.',
