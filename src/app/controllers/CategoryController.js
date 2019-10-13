@@ -65,7 +65,7 @@ class CategoryController {
           {
             model: File,
             as: 'image',
-            attributes: ['id', 'path'],
+            attributes: ['id', 'path', 'url'],
           },
         ],
         where: { category_id: req.params.id },

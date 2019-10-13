@@ -14,21 +14,21 @@ import authMiddleware from './app/middlewares/auth';
 const routes = new Router();
 const upload = multer(multerConfig);
 
-/* Usuário */
 routes.get('/users', UserController.index);
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
 
 routes.get('/categories', CategoryController.index);
 routes.get('/categories/:id', CategoryController.index);
+
 routes.get('/locations', LocationController.index);
 routes.get('/locations/:id', LocationController.index);
-routes.get('/evaluations/:id', EvaluationController.index);
 
-routes.get('/', (req, res) => res.send("IT'S WORK!"));
+routes.get('/evaluations/:id', EvaluationController.index);
 
 routes.use(authMiddleware);
 routes.put('/users', UserController.update);
+
 routes.post('/categories', CategoryController.store);
 routes.put('/categories', CategoryController.update);
 routes.delete('/categories/:id', CategoryController.delete);

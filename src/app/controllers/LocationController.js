@@ -64,7 +64,7 @@ class LocationController {
           {
             model: File,
             as: 'image',
-            attributes: ['id', 'path'],
+            attributes: ['id', 'path', 'url'],
           },
         ],
         where: { id: req.params.id },
@@ -153,6 +153,7 @@ class LocationController {
 
   async store(req, res) {
     const schema = Yup.object().shape({
+      image_id: Yup.number().required(),
       name: Yup.string().required(),
       category_id: Yup.string().required(),
       number: Yup.string().required(),

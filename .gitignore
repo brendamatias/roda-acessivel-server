@@ -1,3 +1,8 @@
-node_modules
-dist
+node_modules/
+.vscode/
 .env
+
+tmp/uploads/*
+
+!tmp/uploads/.gitkeep
+!tmp/uploads/default
