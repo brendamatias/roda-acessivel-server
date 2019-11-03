@@ -143,7 +143,7 @@ class LocationController {
         {
           model: File,
           as: 'image',
-          attributes: ['id', 'path'],
+          attributes: ['id', 'path', 'url'],
         },
       ],
     });
@@ -218,12 +218,13 @@ class LocationController {
       zip_code: response.data.cep,
     });
 
-    const { name, category_id } = req.body;
+    const { name, category_id, image_id } = req.body;
 
     const location = await Location.create({
       name,
       address_id,
       category_id,
+      image_id,
     });
 
     return res.json(location);
@@ -231,6 +232,7 @@ class LocationController {
 
   async update(req, res) {
     const schema = Yup.object().shape({
+      image_id: Yup.number(),
       name: Yup.string(),
       category_id: Yup.string(),
       zip_code: Yup.string()
