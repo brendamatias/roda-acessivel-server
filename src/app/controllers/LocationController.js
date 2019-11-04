@@ -83,7 +83,7 @@ class LocationController {
 
     const locations = await Location.findAll({
       order: ['id'],
-      limit: 4,
+      limit: 10,
       offset: (page - 1) * 4,
       attributes: [
         'id',
