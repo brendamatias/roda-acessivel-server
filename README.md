@@ -41,7 +41,7 @@ O Roda Acessível é uma aplicação que visa disponibilizar informações sobre
 
 ## 💻 Web
 
-- Aplicação web disponível em: <a href="https://github.com/brendamatias/roda-acessivel-web">Mobile</a>
+- Aplicação web disponível em: <a href="https://github.com/brendamatias/roda-acessivel-web">Web</a>
 
 ---
 
