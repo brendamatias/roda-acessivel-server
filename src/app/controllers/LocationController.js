@@ -155,7 +155,7 @@ class LocationController {
     const schema = Yup.object().shape({
       image_id: Yup.number().required(),
       name: Yup.string().required(),
-      category_id: Yup.string().required(),
+      category_id: Yup.number().required(),
       number: Yup.string().required(),
       zip_code: Yup.string()
         .required()
@@ -234,7 +234,7 @@ class LocationController {
     const schema = Yup.object().shape({
       image_id: Yup.number(),
       name: Yup.string(),
-      category_id: Yup.string(),
+      category_id: Yup.number(),
       zip_code: Yup.string()
         .min(8)
         .max(9),
