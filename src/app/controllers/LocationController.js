@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import Sequelize from 'sequelize';
+
 import Location from '../models/Location';
 import User from '../models/User';
 import Address from '../models/Address';
@@ -147,7 +148,10 @@ class LocationController {
       ],
     });
 
-    return res.json(locations);
+    let total = await Location.findAll();
+    total = total.length;
+
+    return res.json({ locations, total });
   }
 
   async store(req, res) {
