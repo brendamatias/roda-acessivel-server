@@ -201,7 +201,7 @@ class LocationController {
     const addressExists = await Address.findOne({
       where: {
         number: req.body.number,
-        zip_code: response.data.cep,
+        zip_code: response.data ? response.data.cep : req.body.zip_code,
       },
     });
 
@@ -210,12 +210,14 @@ class LocationController {
     }
 
     const { id: address_id } = await Address.create({
-      street: response.data.logradouro,
+      street: response.data ? response.data.logradouro : req.body.street,
       number: req.body.number,
-      neighborhood: response.data.bairro,
-      city: response.data.localidade,
-      state: response.data.uf,
-      zip_code: response.data.cep,
+      neighborhood: response.data
+        ? response.data.bairro
+        : req.body.neighborhood,
+      city: response.data ? response.data.localidade : req.body.city,
+      state: response.data ? response.data.uf : req.body.state,
+      zip_code: response.data ? response.data.cep : req.body.zip_code,
     });
 
     const { name, category_id, image_id } = req.body;
