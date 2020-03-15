@@ -1,6 +1,5 @@
 import * as Yup from 'yup';
 import Sequelize from 'sequelize';
-import api from '../../services/api';
 import Location from '../models/Location';
 import User from '../models/User';
 import Address from '../models/Address';
@@ -156,10 +155,16 @@ class LocationController {
       image_id: Yup.number().required(),
       name: Yup.string().required(),
       category_id: Yup.number().required(),
+      street: Yup.string().required(),
       number: Yup.string().required(),
+      neighborhood: Yup.string().required(),
+      city: Yup.string().required(),
+      state: Yup.string()
+        .required()
+        .max(2),
       zip_code: Yup.string()
         .required()
-        .min(8)
+        .min(9)
         .max(9),
     });
 
@@ -176,8 +181,19 @@ class LocationController {
       });
     }
 
+    const {
+      name,
+      street,
+      number,
+      neighborhood,
+      city,
+      state,
+      zip_code,
+      category_id,
+    } = req.body;
+
     const locationExists = await Location.findOne({
-      where: { name: req.body.name },
+      where: { name },
     });
 
     if (locationExists) {
@@ -185,23 +201,17 @@ class LocationController {
     }
 
     const categoryExists = await Category.findOne({
-      where: { id: req.body.category_id },
+      where: { id: category_id },
     });
 
     if (!categoryExists) {
       return res.status(400).json({ error: 'Categoria não existente.' });
     }
 
-    const response = await api
-      .get(`${req.body.zip_code}/json/`)
-      .catch(error => {
-        return res.status(400).json({ error });
-      });
-
     const addressExists = await Address.findOne({
       where: {
-        number: req.body.number,
-        zip_code: response.data ? response.data.cep : req.body.zip_code,
+        number,
+        zip_code,
       },
     });
 
@@ -210,17 +220,15 @@ class LocationController {
     }
 
     const { id: address_id } = await Address.create({
-      street: response.data ? response.data.logradouro : req.body.street,
-      number: req.body.number,
-      neighborhood: response.data
-        ? response.data.bairro
-        : req.body.neighborhood,
-      city: response.data ? response.data.localidade : req.body.city,
-      state: response.data ? response.data.uf : req.body.state,
-      zip_code: response.data ? response.data.cep : req.body.zip_code,
+      street,
+      number,
+      neighborhood,
+      city,
+      state,
+      zip_code,
     });
 
-    const { name, category_id, image_id } = req.body;
+    const { image_id } = req.body;
 
     const location = await Location.create({
       name,
@@ -234,6 +242,7 @@ class LocationController {
 
   async update(req, res) {
     const schema = Yup.object().shape({
+      id: Yup.number().required(),
       image_id: Yup.number(),
       name: Yup.string(),
       category_id: Yup.number(),
@@ -275,17 +284,21 @@ class LocationController {
       }
     }
 
-    if (req.body.zip_code) {
-      const response = await api
-        .get(`${req.body.zip_code}/json/`)
-        .catch(error => {
-          return res.status(400).json({ error });
-        });
+    if (req.body.category_id) {
+      const categoryExists = await Category.findOne({
+        where: { id: req.body.category_id },
+      });
 
+      if (!categoryExists) {
+        return res.status(400).json({ error: 'Categoria não existente.' });
+      }
+    }
+
+    if (req.body.zip_code) {
       const addressExists = await Address.findOne({
         where: {
           number: req.body.number,
-          zip_code: response.data.cep,
+          zip_code: req.body.zip_code,
         },
       });
 
@@ -295,13 +308,15 @@ class LocationController {
 
       const address = await Address.findByPk(location.address_id);
 
+      const { street, number, neighborhood, city, state, zip_code } = req.body;
+
       const addressUpdate = await address.update({
-        street: response.data.logradouro,
-        number: req.body.number,
-        neighborhood: response.data.bairro,
-        city: response.data.localidade,
-        state: response.data.uf,
-        zip_code: response.data.cep,
+        street,
+        number,
+        neighborhood,
+        city,
+        state,
+        zip_code,
       });
 
       return res.json({
