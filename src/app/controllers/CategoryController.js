@@ -21,7 +21,7 @@ class CategoryController {
 
       const { page = 1 } = req.query;
 
-      const location = await Location.findAll({
+      const locations = await Location.findAll({
         order: ['id'],
         limit: 4,
         offset: (page - 1) * 4,
@@ -71,7 +71,10 @@ class CategoryController {
         where: { category_id: req.params.id },
       });
 
-      return res.json(location);
+      let total = await Location.findAll();
+      total = total.length;
+
+      return res.json({ locations, total });
     }
 
     return res.json(categories);
