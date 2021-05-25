@@ -8,7 +8,10 @@ module.exports = {
   // password: process.env.DB_PASS,
   // database: process.env.DB_NAME,
   dialectOptions: {
-    ssl: true
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
   },
   define: {
     timestamps: true,
