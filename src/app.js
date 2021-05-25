@@ -13,10 +13,9 @@ class App {
     this.routes();
   }
 
-  /* Para enviar e receber requisições em formato Json */
   middlewares() {
-    this.server.use(express.json());
     this.server.use(cors());
+    this.server.use(express.json());
     this.server.use(
       '/files',
       express.static(path.resolve(__dirname, '..', 'tmp', 'uploads'))
